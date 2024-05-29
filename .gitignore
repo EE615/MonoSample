@@ -1,0 +1,7 @@
+kitti_models/
+.idea/
+data/
+build/
+aug.egg-info/
+
+*.so

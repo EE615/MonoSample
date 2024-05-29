@@ -1,0 +1,63 @@
+dataset:
+  type: 'kitti'
+  root_dir: '/mnt/e/DataSet/kitti'
+  label_dir: '/mnt/e/DataSet/kitti/training/label_2'
+  dense_depth_dir: '/mnt/e/DataSet/kitti/training/depth_dense'
+  database_dir: '/home/a/DataSet/kitti/kitti_drx_database'
+  eval_cls: ['Car']
+  #eval_cls: ['Car','Pedestrian','Cyclist']
+  batch_size: 4
+  num_workers: 16
+  class_merging: False
+  use_dontcare: False
+  use_3d_center: True
+  writelist: ['Car']
+  random_flip: 0.5
+  random_crop: 0.5
+  random_sample:
+    prob: 0.5
+    database_num: -1
+    sample_num: 10
+    sample_constraint:
+      max_z2y: 10
+      max_x2z: 10
+      max_dz: 10
+      max_rate: 1.2
+      min_rate: 0.5
+  scale: 0.4
+  shift: 0.1
+  drop_last_val: True
+
+model:
+  type: 'DID'
+  backbone: 'dla34'
+  neck: 'DLAUp'
+
+optimizer:
+  type: 'adam'
+  lr: 0.001
+  weight_decay: 0.00001
+
+lr_scheduler:
+  warmup: True  # 5 epoches, cosine warmup, init_lir=0.00001 in default
+  decay_rate: 0.1
+  decay_list: [90, 120]
+
+trainer:
+  max_epoch: 140
+  eval_start: 90
+  eval_frequency: 10 # evaluation interval (in epoch)
+  save_frequency: 10 # checkpoint save interval (in epoch)
+  disp_frequency: 10000 # display interval (in batch)
+  log_dir: 'kitti_models/logs/DID-M3D'
+  out_dir: 'kitti_models/output/DID-M3D'
+  #resume_model: '/home/a/DID-M3D/kitti_models/logs/DID-M3D/checkpoints/checkpoint_epoch_100.pth' # pre-trained model path
+  HTL_stop: 90
+
+tester:
+  threshold: 0.2  # confidence filter
+  out_dir: './tmp_test/flip-crop'
+  resume_model: '/mnt/e/Output/DID-M3D/flip-crop/checkpoint_epoch_140.pth' # pre-trained model path
+
+
+
